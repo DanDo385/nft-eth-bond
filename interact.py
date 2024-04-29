@@ -6,7 +6,12 @@ import sys
 with open('compiled_code.json', 'r') as file:
     compiled_sol = json.load(file)
 
-# ABI and Bytecode
+# Load the deployed contract address
+with open('deployed_contract_address.json', 'r') as file:
+    deployed_info = json.load(file)
+contract_address = deployed_info['contract_address']
+
+# ABI from compiled code
 abi = compiled_sol['contracts']['Interaction.sol']['Interaction']['abi']
 
 # Connect to local Ganache
@@ -14,9 +19,6 @@ w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545'))
 
 # Set the default account
 w3.eth.default_account = w3.eth.accounts[0]
-
-# The contract's address (This needs to be replaced with the actual deployed address)
-contract_address = 'REPLACE_WITH_YOUR_CONTRACT_ADDRESS'
 
 # Creating an instance of the deployed contract
 contract = w3.eth.contract(address=contract_address, abi=abi)
