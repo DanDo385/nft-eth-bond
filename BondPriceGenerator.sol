@@ -28,10 +28,11 @@ contract BondPriceGenerator {
      * Simulated callback function that would be called by Chainlink VRF.
      */
     function fulfillRandomness(uint256 randomness) private {
-        uint256 scale = 21; // Scale to get 21 possible results (9980 to 10000 inclusive)
-        uint256 base = 9980; // Start range at 9980 (represents 99.80)
-        randomPrice = (randomness % scale + base) / 100.0; // Ensures a result between 99.80 and 100.00
+    uint256 scale = 21; // Scale to get 21 possible results (9980 to 10000 inclusive)
+    uint256 base = 9980; // Start range at 9980 (represents 99.80)
+    randomPrice = (randomness % scale + base) / 100.0; // Ensures a result between 99.80 and 100.00
     }
+
 
     // Function to reset random price (for testing purposes)
     function resetRandomPrice() public {
