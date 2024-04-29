@@ -11,7 +11,7 @@ except ValueError:
 today = datetime.date.today()
 
 # Create payment schedule
-payment_schedule = [today + datetime.timedelta(days=365 * i) for i in range(maturity_years + 1)]
+payment_schedule = [today.replace(year=today.year + i) for i in range(maturity_years + 1)]
 
 # Display the payment schedule
 print("\nBond Payment Schedule:")
