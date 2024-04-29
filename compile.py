@@ -2,12 +2,12 @@ from solcx import compile_standard, install_solc
 
 install_solc('0.8.0')
 
-with open('MyContract.sol', 'r') as file:
+with open('Interaction.sol', 'r') as file:
     source_code = file.read()
 
 compiled_sol = compile_standard({
     "language": "Solidity",
-    "sources": {"MyContract.sol": {"content": source_code}},
+    "sources": {"Interaction.sol": {"content": source_code}},
     "settings": {
         "outputSelection": {
             "*": {
