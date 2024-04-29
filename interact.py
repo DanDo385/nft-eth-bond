@@ -10,10 +10,9 @@ with open('deployed_contract_address.json', 'r') as file:
     deployed_info = json.load(file)
 contract_address = deployed_info['contract_address']
 
-# Load the existing ABI from compiled_code.json
 with open('compiled_code.json', 'r') as file:
     compiled_sol = json.load(file)
-abi = compiled_sol['contracts']['Interaction.sol']['Interaction']['abi']
+abi = compiled_sol['contracts']['BondPriceGenerator.sol']['BondPriceGenerator']['abi']
 
 # Create the contract instance with Web3
 contract = w3.eth.contract(address=contract_address, abi=abi)
@@ -22,18 +21,10 @@ contract = w3.eth.contract(address=contract_address, abi=abi)
 random_price = contract.functions.randomPrice().call()
 
 # Prompt for coupon rate
-try:
-    coupon_rate = float(input("Please enter the coupon rate (as a percentage, e.g., 5.5): "))
-except ValueError:
-    print("Error: Please enter a valid number for the coupon rate.")
-    exit(1)
+coupon_rate = float(input("Please enter the coupon rate (as a percentage, e.g., 5.5): "))
 
 # Prompt for maturity date of the bond (in years)
-try:
-    maturity_years = int(input("Please enter the maturity date of the bond (in years): "))
-except ValueError:
-    print("Error: Please enter a valid integer for maturity years.")
-    exit(1)
+maturity_years = int(input("Please enter the maturity date of the bond (in years): "))
 
 # Current date
 today = datetime.date.today()
