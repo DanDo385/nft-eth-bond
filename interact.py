@@ -28,7 +28,11 @@ if len(sys.argv) != 2:
     print("Usage: python3 interact_with_contract.py <number>")
     sys.exit(1)
 
-new_number = int(sys.argv[1])
+try:
+    new_number = int(sys.argv[1])
+except ValueError:
+    print("Error: Please enter a valid integer.")
+    sys.exit(1)
 
 # Call the setMyNumber function
 tx_hash = contract.functions.setMyNumber(new_number).transact()

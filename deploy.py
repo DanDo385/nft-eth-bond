@@ -1,6 +1,7 @@
 from web3 import Web3
 import json
 
+# Load the compiled contract ABI and bytecode
 with open('compiled_code.json', 'r') as file:
     compiled_sol = json.load(file)
 
@@ -22,11 +23,19 @@ tx_hash = Interaction.constructor().transact()
 # Wait for the transaction to be mined
 tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
 
-# Interact with the contract
+# Save the contract address to a JSON file
+contract_address = tx_receipt.contractAddress
+with open('deployed_contract_address.json', 'w') as file:
+    json.dump({'contract_address': contract_address}, file)
+print(f"Contract deployed at address: {contract_address}")
+
+# Interact with the contract to test initial state and a state change
 contract_instance = w3.eth.contract(address=tx_receipt.contractAddress, abi=abi)
-print(contract_instance.functions.getMyNumber().call())
+initial_value = contract_instance.functions.getMyNumber().call()
+print(f"Initial contract value: {initial_value}")
 
 # Update the contract state
 tx_hash = contract_instance.functions.setMyNumber(255).transact()
 tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-print(contract_instance.functions.getMyNumber().call())
+updated_value = contract_instance.functions.getMyNumber().call()
+print(f"Updated contract value: {updated_value}")
