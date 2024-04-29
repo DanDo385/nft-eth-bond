@@ -7,19 +7,11 @@ def calculate_ytm(price, face_value, coupon_rate, years):
     return ((annual_coupon + ((face_value - price) / years)) / ((face_value + price) / 2)) * 100
 
 def calculate_dv01(price, face_value, coupon_rate, years, ytm):
-    """ Calculate the DV01 of a bond.
-        price: Current price of the bond
-        face_value: Par value of the bond (assuming $100)
-        coupon_rate: Annual coupon rate in percentage
-        years: Years to maturity
-        ytm: Yield to Maturity in percentage
-    """
-    # Calculate the modified duration as an approximation
     ytm_decimal = ytm / 100
     coupon_decimal = coupon_rate / 100
     duration = (1 + ytm_decimal) / ytm_decimal - (1 + ytm_decimal + years * (face_value - price) / price) / (coupon_decimal * (1 + ytm_decimal) ** years - ytm_decimal + years * (1 + ytm_decimal) ** (years - 1) * (face_value - price) / price)
-    dv01 = duration * price / 10000  # DV01 calculation
-    return dv01
+    dv01 = duration * price / 10000  # Calculate DV01
+    return dv01 * 100  # Multiply DV01 by 100 for scaling
 
 # Setup web3 connection to Ganache
 w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545'))
@@ -72,4 +64,5 @@ print(f"Yield to Maturity: {ytm:.2f}%")
 
 # Calculate and display the DV01
 dv01 = calculate_dv01(random_price, face_value, coupon_rate, maturity_years, ytm)
-print(f"DV01 (Dollar Value of One Basis Point Change): ${dv01:.4f}")
+print(f"DV01 (Dollar Value of One Basis Point Change x 100): ${dv01:.2f}")
+    
