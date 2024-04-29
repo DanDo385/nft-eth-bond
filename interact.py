@@ -1,17 +1,31 @@
+from scipy.optimize import newton
+import numpy as np
 from web3 import Web3
 import datetime
 import json
 
-def calculate_ytm(price, face_value, coupon_rate, years):
-    annual_coupon = face_value * (coupon_rate / 100)
-    return ((annual_coupon + ((face_value - price) / years)) / ((face_value + price) / 2)) * 100
+# Bond details
+face_value = 100  # Assuming standard face value
+coupon_rate = 0.07
+years_to_maturity = 10
+market_price = 99.90
+annual_coupon_payment = face_value * coupon_rate
+coupons_per_year = 1
 
-def calculate_dv01(price, face_value, coupon_rate, years, ytm):
-    ytm_decimal = ytm / 100
-    coupon_decimal = coupon_rate / 100
-    duration = (1 + ytm_decimal) / ytm_decimal - (1 + ytm_decimal + years * (face_value - price) / price) / (coupon_decimal * (1 + ytm_decimal) ** years - ytm_decimal + years * (1 + ytm_decimal) ** (years - 1) * (face_value - price) / price)
-    dv01 = duration * price / 10000  # Calculate DV01
-    return dv01 * 100  # Multiply DV01 by 100 for scaling
+# Function to calculate bond price given a yield
+def bond_price(yield_rate):
+    coupon_pv = annual_coupon_payment * ((1 - (1 + yield_rate) ** (-years_to_maturity * coupons_per_year)) / yield_rate)
+    par_value_pv = face_value / ((1 + yield_rate) ** (years_to_maturity * coupons_per_year))
+    return coupon_pv + par_value_pv
+
+# Calculate YTM using newton's method to find the root where bond price equals market price
+ytm = newton(lambda y: bond_price(y) - market_price, coupon_rate)
+
+# Calculate DV01
+basis_point = 0.0001
+price_up = bond_price(ytm + basis_point)
+price_down = bond_price(ytm - basis_point)
+dv01 = (price_up - price_down) / 2
 
 # Setup web3 connection to Ganache
 w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545'))
@@ -36,33 +50,8 @@ w3.eth.wait_for_transaction_receipt(tx_hash)
 # Fetch the random price from the contract
 random_price = contract.functions.randomPrice().call()
 
-# Prompt for coupon rate
-coupon_rate = float(input("Please enter the coupon rate (as a percentage, e.g., 5.5): "))
-
-# Prompt for maturity date of the bond (in years)
-maturity_years = int(input("Please enter the maturity date of the bond (in years): "))
-
-# Current date
-today = datetime.date.today()
-
-# Create payment schedule
-payment_schedule = [today.replace(year=today.year + i) for i in range(maturity_years + 1)]
-
 # Display bond details
-print(f"\nBond Price: {random_price} (Randomly generated)")
-print(f"Coupon Rate: {coupon_rate}%")
-
-# Display the payment schedule
-print("\nBond Payment Schedule:")
-for date in payment_schedule:
-    print(date.strftime("%m/%d/%Y"))
-
-# Calculate and display the Yield to Maturity
-face_value = 100  # Assuming the face value of the bond is $100
-ytm = calculate_ytm(random_price, face_value, coupon_rate, maturity_years)
-print(f"Yield to Maturity: {ytm:.2f}%")
-
-# Calculate and display the DV01
-dv01 = calculate_dv01(random_price, face_value, coupon_rate, maturity_years, ytm)
-print(f"DV01 (Dollar Value of One Basis Point Change x 100): ${dv01:.2f}")
-    
+print(f"\nRandom Bond Price: {random_price} (from smart contract)")
+print(f"Coupon Rate: {coupon_rate * 100}%")
+print(f"Yield to Maturity: {ytm * 100:.2f}%")
+print(f"DV01: ${dv01:.4f}")
