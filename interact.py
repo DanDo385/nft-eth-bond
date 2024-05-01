@@ -60,6 +60,20 @@ for date in payment_schedule:
 
 if mint_nft == 'y':
     print("Minting the bond as an NFT...")
+    metadata = {
+        "name": f"{coupon_rate}% {maturity_years} years Bond",
+        "description": f"{coupon_rate}% Coupon, {maturity_years} years Maturity - Bond denominated in ETH",
+        "image": "https://ipfs.io/ipfs/QmV7V5qYUQYNFvQDtz8xafrd2pSSsVP5xkPSCdMAsXbrBT",
+        "attributes": [
+            {"trait_type": "Payment Schedule", "value": [date.strftime("%m/%d/%Y") for date in payment_schedule]},
+            {"trait_type": "Generated Price", "value": f"{market_price}"},
+            {"trait_type": "Yield to Maturity", "value": f"{ytm * 100:.2f}%"},
+            {"trait_type": "DV01", "value": f"${dv01 * 10000:.2f}"},
+            {"trait_type": "Convexity", "value": f"{convexity:.2f}"}
+        ]
+    }
+    with open('metadata.json', 'w') as json_file:
+        json.dump(metadata, json_file)
     subprocess.run(["python", "mint.py"])  # Calling the mint.py script
 else:
     print("No NFT minting requested.")
