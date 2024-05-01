@@ -2,6 +2,7 @@ import numpy as np
 from scipy.optimize import newton
 import random
 import datetime
+import subprocess
 from web3 import Web3
 import json
 
@@ -12,7 +13,6 @@ def bond_price(yield_rate, coupon_rate, face_value, years_to_maturity, coupons_p
     times = np.array([i + 1 for i in range(years_to_maturity)] + [years_to_maturity])
     discount_factors = (1 + yield_rate) ** times
     return np.sum(cash_flows / discount_factors)
-
 
 def calculate_bond_metrics(ytm, coupon_rate, face_value, years_to_maturity, coupons_per_year, market_price):
     basis_point = 0.0001
@@ -60,6 +60,6 @@ for date in payment_schedule:
 
 if mint_nft == 'y':
     print("Minting the bond as an NFT...")
-    # Minting logic goes here
+    subprocess.run(["python", "mint.py"])  # Calling the mint.py script
 else:
     print("No NFT minting requested.")
