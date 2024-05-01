@@ -6,17 +6,26 @@ from web3 import Web3
 with open('metadata.json', 'r') as json_file:
     metadata = json.load(json_file)
 
-# Setup Web3 (Assuming you have the ABI and contract address)
+# Setup Web3
 w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545'))
-contract_address = 'YOUR_CONTRACT_ADDRESS_HERE'
-abi = json.loads('YOUR_CONTRACT_ABI_HERE')
+
+# Load contract ABI and address
+with open('compiled_code.json', 'r') as file:
+    compiled_sol = json.load(file)
+    # Adjust the following lines according to your contract's structure in the JSON file
+    abi = compiled_sol['contracts']['BondNFT.sol']['BondNFT']['abi']
+
+with open('deployed_contract_address.json', 'r') as file:
+    deployed_info = json.load(file)
+    contract_address = deployed_info['contract_address']
+
 contract = w3.eth.contract(address=contract_address, abi=abi)
 
-# You need to set the default account and private key if needed
+# Set the default account (the account that will mint the NFT)
 w3.eth.default_account = w3.eth.accounts[0]
 
-# Convert metadata to a tokenURI (perhaps uploading the metadata to IPFS and getting a URI, or using a service like Pinata)
-tokenURI = "URL_TO_THE_METADATA"  # This should be the actual URL to the JSON metadata in IPFS or other service
+# Example URL to the metadata - this should be an actual URL to the JSON metadata, typically on IPFS
+tokenURI = "https://ipfs.io/ipfs/QmbeU85nfYFxt34fv8LRo3q6yY8tyJjfv4Xj5A5eKgR5jr"
 
 # Interacting with the smart contract to mint an NFT
 tx_hash = contract.functions.mintBondNFT(w3.eth.default_account, tokenURI).transact()
