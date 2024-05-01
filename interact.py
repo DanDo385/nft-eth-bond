@@ -5,19 +5,20 @@ import datetime
 from web3 import Web3
 import json
 
-# Function to calculate the present value of bond cash flows given a yield
 def bond_price(yield_rate, coupon_rate, face_value, years_to_maturity, coupons_per_year):
+    # Generate cash flows for each period, including the final face value payment
     cash_flows = np.array([coupon_rate * face_value] * years_to_maturity + [face_value])
-    times = np.array([i + 1 for i in range(years_to_maturity)])  # Correct time periods for cash flows
+    # Generate times for each cash flow, ensuring the final face value is accounted for
+    times = np.array([i + 1 for i in range(years_to_maturity)] + [years_to_maturity])
     discount_factors = (1 + yield_rate) ** times
     return np.sum(cash_flows / discount_factors)
 
-# Function to calculate DV01 and Convexity
+
 def calculate_bond_metrics(ytm, coupon_rate, face_value, years_to_maturity, coupons_per_year, market_price):
     basis_point = 0.0001
     price_up = bond_price(ytm + basis_point, coupon_rate, face_value, years_to_maturity, coupons_per_year)
     price_down = bond_price(ytm - basis_point, coupon_rate, face_value, years_to_maturity, coupons_per_year)
-    dv01 = (price_up - price_down) / 2 / 100  # Correct DV01 calculation
+    dv01 = (price_up - price_down) / 2 / 100  # DV01 calculation adjusted
 
     price_up2 = bond_price(ytm + 2 * basis_point, coupon_rate, face_value, years_to_maturity, coupons_per_year)
     price_down2 = bond_price(ytm - 2 * basis_point, coupon_rate, face_value, years_to_maturity, coupons_per_year)
@@ -45,7 +46,7 @@ dv01, convexity = calculate_bond_metrics(ytm, coupon_rate / 100, face_value, mat
 
 # Payment schedule
 today = datetime.date.today()
-payment_schedule = [today.replace(year=today.year + i) for i in range(maturity_years + 1)]
+payment_schedule = [today.replace(year=today.year + i + 1) for i in range(maturity_years)]  # Exclude today
 
 # Output results
 print(f"\nBond Price: {market_price} (Randomly generated)")
