@@ -52,8 +52,8 @@ payment_schedule = [today.replace(year=today.year + i + 1) for i in range(maturi
 print(f"\nBond Price: {market_price} (Randomly generated)")
 print(f"Coupon Rate: {coupon_rate}%")
 print(f"Yield to Maturity: {ytm * 100:.2f}%")
-print(f"DV01 (Dollar Value of One Basis Point Change x 100): ${dv01 * 100:.2f}")
-print(f"Convexity (divided by 100 for scale): {convexity:.2f}")
+print(f"DV01 (Dollar Value of One Basis Point): ${dv01 * 10000:.2f}")
+print(f"Convexity: {convexity:.2f}")
 print("\nBond Payment Schedule:")
 for date in payment_schedule:
     print(date.strftime("%m/%d/%Y"))
