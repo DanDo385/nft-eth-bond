@@ -1,3 +1,4 @@
+# interact.py
 import numpy as np
 from scipy.optimize import newton
 import random
@@ -61,8 +62,8 @@ for date in payment_schedule:
 if mint_nft == 'y':
     print("Minting the bond as an NFT...")
     metadata = {
-        "name": f"{coupon_rate}% {maturity_years} years Bond",
-        "description": f"{coupon_rate}% Coupon, {maturity_years} years Maturity - Bond denominated in ETH",
+        "name": f"{coupon_rate}% {maturity_years} year Bond",
+        "description": f"ETH {coupon_rate}% Coupon, {maturity_years} year Maturity Annual Coupon Fixed Income Bond",
         "image": "https://ipfs.io/ipfs/QmV7V5qYUQYNFvQDtz8xafrd2pSSsVP5xkPSCdMAsXbrBT",
         "attributes": [
             {"trait_type": "Payment Schedule", "value": [date.strftime("%m/%d/%Y") for date in payment_schedule]},

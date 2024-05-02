@@ -31,8 +31,8 @@ compiled_sol = compile_standard({
     }
 }, solc_version='0.8.1', allow_paths=node_modules_path)
 
-# Write the compiled contract to a JSON file
-with open("compiled_code.json", "w") as file:
+# Write the compiled contract to a JSON file in the build folder
+with open("./build/compiled_code.json", "w") as file:
     file.write(json.dumps(compiled_sol))
 
-print("Compilation successful, output saved to compiled_code.json.")
+print("Compilation successful, output saved to build/compiled_code.json.")
