@@ -3,10 +3,11 @@ import json
 import os
 
 # Load compiled contract
-with open('./build/compiled_code.json', 'r') as file:
+with open(os.path.join(os.getcwd(), 'build', 'compiled_code.json'), 'r') as file:
     compiled_sol = json.load(file)
 
-contract_interface = compiled_sol['contracts']['BondNFT.sol']['BondPriceGenerator']
+# Ensure you're using the correct contract name here
+contract_interface = compiled_sol['contracts']['BondNFT.sol']['BondNFT']
 
 # Connect to local Ethereum node
 w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545'))
@@ -18,7 +19,7 @@ tx_hash = BondNFT.constructor().transact()
 tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
 
 # Save the contract address to a JSON file in the build folder
-with open('./build/deployed_contract_address.json', 'w') as file:
+with open(os.path.join(os.getcwd(), 'build', 'deployed_contract_address.json'), 'w') as file:
     json.dump({'contract_address': tx_receipt.contractAddress}, file)
 
 print(f"Contract deployed at address: {tx_receipt.contractAddress}")
