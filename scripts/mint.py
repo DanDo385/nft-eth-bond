@@ -1,3 +1,4 @@
+# mint.py
 import json
 from web3 import Web3
 
@@ -5,15 +6,15 @@ from web3 import Web3
 w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:8545'))
 
 # Load the metadata from the JSON file created by interact.py
-with open('../build/metadata.json', 'r') as json_file:
+with open('build/metadata.json', 'r') as json_file:
     metadata = json.load(json_file)
 
 # Load contract ABI and address from build folder
-with open('../build/compiled_code.json', 'r') as file:
+with open('build/compiled_code.json', 'r') as file:
     compiled_sol = json.load(file)
     abi = compiled_sol['contracts']['BondNFT.sol']['BondNFT']['abi']
 
-with open('../build/deployed_contract_address.json', 'r') as file:
+with open('build/deployed_contract_address.json', 'r') as file:
     deployed_info = json.load(file)
     contract_address = deployed_info['contract_address']
 

@@ -73,8 +73,9 @@ if mint_nft == 'y':
             {"trait_type": "Convexity", "value": f"{convexity:.2f}"}
         ]
     }
-    with open('metadata.json', 'w') as json_file:
+    with open('./build/metadata.json', 'w') as json_file: 
         json.dump(metadata, json_file)
-    subprocess.run(["python", "mint.py"])  # Calling the mint.py script
+    subprocess.run(["python", "scripts/mint.py"]) 
+
 else:
     print("No NFT minting requested.")
